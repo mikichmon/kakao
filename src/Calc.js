@@ -152,10 +152,10 @@ export default class CalcCard extends Component {
 
         if (this.state.page === "Home") {
             return <div>
-                    <Button onClick={() => this.startCalc(Methods.Addition)}><i class="fas fa-plus"></i></Button>
-                    <Button onClick={() => this.startCalc(Methods.Subtraction)}><i class="fas fa-minus"></i></Button>
-                    <Button onClick={() => this.startCalc(Methods.Multiplication)}><i class="fas fa-times"></i></Button>
-                    <Button onClick={() => this.startCalc(Methods.Division)}>÷</Button>
+                    <Button className="Start" onClick={() => this.startCalc(Methods.Addition)}>+</Button>
+                    <Button className="Start" onClick={() => this.startCalc(Methods.Subtraction)}>-</Button>
+                    <Button className="Start" onClick={() => this.startCalc(Methods.Multiplication)}>×</Button>
+                    <Button className="Start" onClick={() => this.startCalc(Methods.Division)}>÷</Button>
                 </div>;
 
             //return "";
