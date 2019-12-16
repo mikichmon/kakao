@@ -3,6 +3,11 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline'
 import GeneralUtil from './Util';
 import {Methods} from './Util';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 export default class CalcCard extends Component {
 
@@ -172,10 +177,27 @@ export default class CalcCard extends Component {
             return this.getQuestion();
         } else if (this.state.page === "A") {
             return this.getAnswer();
+        } else if (this.state.page === "Option"){
+            return this.getOption();
         }
 
+    }
 
+    getOption(){
 
+        const optionPage = <div>
+        <FormControl component="fieldset">
+        <FormLabel component="legend">Gender</FormLabel>
+        <RadioGroup defaultValue="female" aria-label="gender" name="customized-radios">
+            <FormControlLabel value="female" control={<Radio />} label="Female" />
+            <FormControlLabel value="male" control={<Radio />} label="Male" />
+            <FormControlLabel value="other" control={<Radio />} label="Other" />
+
+        </RadioGroup>
+        </FormControl>
+        </div>;
+
+        return optionPage;
     }
 
     getQuestion() {
@@ -208,17 +230,37 @@ export default class CalcCard extends Component {
         return <Button className="Answer" variant={variant} color={color} onClick={this.next}><span className="Calc">{mark}</span></Button>
     }
 
+    getFooter(){
+
+        let footerConent;
+        const variant = "text";
+        const color = "primary";
+
+        if (this.state.page !== "Home"){
+            
+            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Home"})}><i class="fas fa-cog HomeButton"></i></Button>
+        }else{
+
+            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Option"})}><i class="fas fa-home HomeButton"></i></Button>
+        }
+
+        return footerConent;
+    }
+
     render() {
         const c = GeneralUtil.getMethodMark();
         console.log(c);
         const content = this.getPage();
+        const footer = this.getFooter();
 
         return (
 
             <div style={{ width: "100%" }}>
 
                 <CssBaseline />   {/* 追加 */}
-                {content}
+                <div>{content}</div>
+
+                <div className="Home">{footer}</div>
 
             </div>
         );
