@@ -29,15 +29,15 @@ export default class CalcCard extends Component {
 
     }
 
-    startCalc() {
+    startCalc(method) {
 
         let q;
 
-        switch (this.state.method) {
+        switch (method) {
             case Methods.Addition: q = this.generate4Addition(); break;
             case Methods.Subtraction: q = this.generate4Subtraction(); break;
-            case Methods.Multiplication: q = this.generate4Addition(); break;
-            case Methods.Division: q = this.generate4Addition(); break;
+            case Methods.Multiplication: q = this.generate4Multiplication(); break;
+            case Methods.Division: q = this.generate4Division(); break;
             default:
 
         }
@@ -45,11 +45,44 @@ export default class CalcCard extends Component {
         this.setState({ page: 'Q' });
         this.setState({ qNo: 0 });
         this.setState({ q });
+        this.setState({ method });
     }
     randomIntMinMax(min, max) {
         var rand = Math.floor(Math.random() * (max + 1 - min)) + min
 
         return rand
+    }
+
+    // 掛け算
+    generate4Multiplication(){
+
+        let q = [];
+
+        for (let i = 0; i < this.state.count; i++){
+
+            const leftNum = this.randomIntMinMax(2, 9);
+            const rightNum = this.randomIntMinMax(2, 9);
+            q.push([leftNum,rightNum])
+        }
+
+        return q;
+    }
+
+    // 割り算
+    generate4Division(){
+
+        let q = [];
+
+        for (let i = 0; i < this.state.count; i++){
+
+            const leftNum = this.randomIntMinMax(2, 9);
+            const rightNum = this.randomIntMinMax(2, 9);
+            //　いったん掛け算して答えから逆算（割り切れるように）
+            const answer = leftNum * rightNum;
+            q.push([answer,rightNum])
+        }
+
+        return q;
     }
 
     // 足し算の問題を作成
@@ -84,9 +117,17 @@ export default class CalcCard extends Component {
     // 引き算の問題
     generate4Subtraction(){
 
+        let q = [];
         
+        for (let i = 0; i < this.state.count; i++){
+            const lastDigit = this.randomIntMinMax(1, 8);   // 1の位は1～8にする
+            const secondDigit = 10; // とりあえず10台のみ
+            const leftNum = secondDigit + lastDigit;
+            const rightNum = this.randomIntMinMax(lastDigit + 1, 9);
+            q.push([leftNum,rightNum])
+        }
 
-
+        return q;
     }
 
     answer() {
@@ -110,7 +151,12 @@ export default class CalcCard extends Component {
     getPage() {
 
         if (this.state.page === "Home") {
-            return <Button onClick={this.startCalc}>GO</Button>;
+            return <div>
+                    <Button onClick={() => this.startCalc(Methods.Addition)}><i class="fas fa-plus"></i></Button>
+                    <Button onClick={() => this.startCalc(Methods.Subtraction)}><i class="fas fa-minus"></i></Button>
+                    <Button onClick={() => this.startCalc(Methods.Multiplication)}><i class="fas fa-times"></i></Button>
+                    <Button onClick={() => this.startCalc(Methods.Division)}>÷</Button>
+                </div>;
 
             //return "";
         } else if (this.state.page === "Q") {
@@ -140,7 +186,7 @@ export default class CalcCard extends Component {
             case Methods.Addition: mark = '+'; break;
             case Methods.Subtraction: mark = <i class="fas fa-minus"></i>; break;
             case Methods.Multiplication: mark = <i class="fas fa-times"></i>; break;
-            case Methods.Division: mark = <i class="fas fa-divide"></i>; break;
+            case Methods.Division: mark = '÷'; break;
             default:
 
         }
