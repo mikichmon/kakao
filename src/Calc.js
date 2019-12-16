@@ -144,21 +144,24 @@ export default class CalcCard extends Component {
 
     getPage() {
 
+        const variant = "text";
+        const color = "primary";
+
         if (this.state.page === "Home") {
             return <div>
                     <div>
-                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Addition)}>
+                        <Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.Addition)}>
                             {GeneralUtil.getMethodMark(Methods.Addition)}
                         </Button>
-                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Subtraction)}>
+                        <Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.Subtraction)}>
                             {GeneralUtil.getMethodMark(Methods.Subtraction)}
                             </Button>
                     </div>
                     <div>
-                        <Button className="Start" onClick={() => this.startCalc(Methods.Multiplication)}>
+                        <Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.Multiplication)}>
                             {GeneralUtil.getMethodMark(Methods.Multiplication)}
                         </Button>
-                        <Button className="Start" onClick={() => this.startCalc(Methods.Division)}>
+                        <Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.Division)}>
                             {GeneralUtil.getMethodMark(Methods.Division)}
                         </Button>
                     </div>
@@ -177,13 +180,17 @@ export default class CalcCard extends Component {
 
     getQuestion() {
 
+        const variant = "text";
+        const color = "primary";
         const mark = GeneralUtil.getMethodMark(this.state.method);
         const q = this.state.q[this.state.qNo];
-        return <Button onClick={this.answer}><div className="Calc">{q[0]} {mark} {q[1]}</div></Button>
+        return <Button className="Question" variant={variant} color={color} onClick={this.answer}><div className="Calc">{q[0]} {mark} {q[1]}</div></Button>
     }
 
     getAnswer() {
 
+        const variant = "text";
+        const color = "primary";
 
         const q = this.state.q[this.state.qNo];
 
@@ -198,7 +205,7 @@ export default class CalcCard extends Component {
 
         }
 
-        return <Button onClick={this.next}><span className="Calc">{mark}</span></Button>
+        return <Button className="Answer" variant={variant} color={color} onClick={this.next}><span className="Calc">{mark}</span></Button>
     }
 
     render() {
