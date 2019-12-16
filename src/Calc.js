@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline'
-
-export const Methods = {
-    Addition: 'Addition',
-    Subtraction: 'Subtraction',
-    Multiplication: 'Multiplication',
-    Division: 'Division',
-};
-Object.freeze(Methods);
+import GeneralUtil from './Util';
+import {Methods} from './Util';
 
 export default class CalcCard extends Component {
 
@@ -153,12 +147,20 @@ export default class CalcCard extends Component {
         if (this.state.page === "Home") {
             return <div>
                     <div>
-                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Addition)}>+</Button>
-                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Subtraction)}>-</Button>
+                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Addition)}>
+                            {GeneralUtil.getMethodMark(Methods.Addition)}
+                        </Button>
+                        <Button className="Start" variant="outlined" color="primary" onClick={() => this.startCalc(Methods.Subtraction)}>
+                            {GeneralUtil.getMethodMark(Methods.Subtraction)}
+                            </Button>
                     </div>
                     <div>
-                        <Button className="Start" onClick={() => this.startCalc(Methods.Multiplication)}>×</Button>
-                        <Button className="Start" onClick={() => this.startCalc(Methods.Division)}>÷</Button>
+                        <Button className="Start" onClick={() => this.startCalc(Methods.Multiplication)}>
+                            {GeneralUtil.getMethodMark(Methods.Multiplication)}
+                        </Button>
+                        <Button className="Start" onClick={() => this.startCalc(Methods.Division)}>
+                            {GeneralUtil.getMethodMark(Methods.Division)}
+                        </Button>
                     </div>
                 </div>;
 
@@ -175,28 +177,9 @@ export default class CalcCard extends Component {
 
     getQuestion() {
 
-        let mark;
-
-        switch (this.state.method) {
-            case Methods.Addition: mark = <i class="fas fa-plus"></i>; break;
-            case Methods.Subtraction: mark = <i class="fas fa-minus"></i>; break;
-            case Methods.Multiplication: mark = <i class="fas fa-times"></i>; break;
-            case Methods.Division: mark = <i class="fas fa-divide"></i>; break;
-            default:
-
-        }
-
-        switch (this.state.method) {
-            case Methods.Addition: mark = '+'; break;
-            case Methods.Subtraction: mark = <i class="fas fa-minus"></i>; break;
-            case Methods.Multiplication: mark = <i class="fas fa-times"></i>; break;
-            case Methods.Division: mark = '÷'; break;
-            default:
-
-        }
-
+        const mark = GeneralUtil.getMethodMark(this.state.method);
         const q = this.state.q[this.state.qNo];
-        return <Button onClick={this.answer}><div class="Calc">{q[0]} {mark} {q[1]}</div></Button>
+        return <Button onClick={this.answer}><div className="Calc">{q[0]} {mark} {q[1]}</div></Button>
     }
 
     getAnswer() {
@@ -215,11 +198,12 @@ export default class CalcCard extends Component {
 
         }
 
-        return <Button onClick={this.next}><span class="Calc">{mark}</span></Button>
+        return <Button onClick={this.next}><span className="Calc">{mark}</span></Button>
     }
 
     render() {
-
+        const c = GeneralUtil.getMethodMark();
+        console.log(c);
         const content = this.getPage();
 
         return (
