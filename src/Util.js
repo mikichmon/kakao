@@ -27,16 +27,19 @@ export default class GeneralUtil {
 	};
 
 	static getOptions = () => {
-
+		const baseOptions = {count:10,isAuto:false,intervalQuestion:1000,intervalAnswer:1000};
 		let options = localStorage.getItem('Options');
 
-		if (options === null){
-			options = {count:10,isAuto:false,interval:1000};
-			localStorage.setItem('Options', JSON.stringify(options));
-		}else{
+		if (options !== null){
 			options = JSON.parse(options);
+
+			Object.keys(baseOptions).forEach(function(key) {
+				if(options[key] !== undefined) baseOptions[key] = options[key];
+			  });
 		}
-		return options;
+		
+		localStorage.setItem('Options', JSON.stringify(baseOptions));
+		return baseOptions;
 
 	}
 }

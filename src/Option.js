@@ -94,10 +94,16 @@ export default class Option extends Component {
 		options.isAuto = v;
 		localStorage.setItem('Options', JSON.stringify(options));
 	}
-	handleChangeInterval(e,v){
+	handleChangeIntervalQ(e,v){
 		//const v = e.target.value;
 		const options = GeneralUtil.getOptions();
-		options.interval = v;
+		options.intervalQuestion = v;
+		localStorage.setItem('Options', JSON.stringify(options));
+	}
+	handleChangeIntervalA(e,v){
+		//const v = e.target.value;
+		const options = GeneralUtil.getOptions();
+		options.intervalAnswer = v;
 		localStorage.setItem('Options', JSON.stringify(options));
 	}
 	render() {
@@ -123,8 +129,10 @@ export default class Option extends Component {
 				}
 				label="自動"
 			/>
-			<Typography gutterBottom>間隔</Typography>
-			<IOSSlider aria-label="ios slider" min={500} max={2000} defaultValue={options.interval} onChangeCommitted={this.handleChangeInterval} marks={marks} valueLabelDisplay="on" />
+			<Typography gutterBottom>問題の間隔</Typography>
+			<IOSSlider aria-label="ios slider" min={500} max={2000} defaultValue={options.intervalQuestion} onChangeCommitted={this.handleChangeIntervalQ} marks={marks} valueLabelDisplay="on" />
+			<Typography gutterBottom>答えの間隔</Typography>
+			<IOSSlider aria-label="ios slider" min={500} max={2000} defaultValue={options.intervalAnswer} onChangeCommitted={this.handleChangeIntervalA} marks={marks} valueLabelDisplay="on" />
 		</FormControl>;
 
 	}

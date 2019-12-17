@@ -17,6 +17,8 @@ const list = [
 	[5, 5]
 ];
 
+let timeoutID = null;
+
 export default class CalcCard extends Component {
 
 	constructor(props) {
@@ -137,27 +139,6 @@ export default class CalcCard extends Component {
 		return [Methods.Subtraction, leftNum, rightNum];
 	}
 
-	answer(timeoutID) {
-		if (timeoutID != null){
-			clearTimeout(timeoutID);
-		}
-		this.setState({ page: 'A' });
-	}
-
-	next() {
-		const qNo = this.state.qNo + 1;
-		
-
-		if (this.state.count !== -1 && this.state.count <= qNo) {
-
-			this.setState({ qNo: 0, page: 'Home' });
-			return;
-		}
-
-		this.setNewQuestion();
-		this.setState({ qNo, page: 'Q' });
-	}
-
 	getPage() {
 
 		const variant = "text";
@@ -199,18 +180,49 @@ export default class CalcCard extends Component {
 
 	}
 
+	clearTimeout(){
+
+		if (timeoutID != null)
+		{
+			clearTimeout(timeoutID);
+			timeoutID = null;
+		}
+
+	}
+
+	answer() {
+		
+		console.log("answer");
+		this.clearTimeout();
+		this.setState({ page: 'A' });
+	}
+
+	next() {
+		
+		console.log("next");
+		this.clearTimeout();
+		const qNo = this.state.qNo + 1;
+		
+
+		if (this.state.count !== -1 && this.state.count <= qNo) {
+
+			this.setState({ qNo: 0, page: 'Home' });
+			return;
+		}
+
+		this.setNewQuestion();
+		this.setState({ qNo, page: 'Q' });
+	}
+
 	getQuestion() {
 
 		const variant = "text";
 		const color = "primary";
 		const q = this.state.q;
 		const mark = GeneralUtil.getMethodMark(q[0]);
-		const options = GeneralUtil.getOptions()
-		const timeoutID = options.isAuto && setTimeout(() => {
-			this.answer();
-		}, options.interval);
-
-		return <Button className="Question" variant={variant} color={color} onClick={()=>this.answer(timeoutID)}><div className="Calc">{q[1]} {mark} {q[2]}</div></Button>
+		
+		console.log("getQuestion");
+		return <Button className="Question" variant={variant} color={color} onClick={this.answer}><div className="Calc">{q[1]} {mark} {q[2]}</div></Button>
 	}
 
 	getAnswer() {
@@ -231,6 +243,8 @@ export default class CalcCard extends Component {
 
 		}
 
+		console.log("getAnswer");
+
 		return <Button className="Answer" variant={variant} color={color} onClick={this.next}><span className="Calc">{answer}</span></Button>
 	}
 
@@ -242,13 +256,28 @@ export default class CalcCard extends Component {
 
 		if (this.state.page !== "Home") {
 
-			footerConent = <Button variant={variant} color={color} onClick={() => this.setState({ page: "Home" })}><FontAwesomeIcon className="HomeButton" icon={['fas', 'home']} /></Button>
+			footerConent = <Button variant={variant} color={color} onClick={() => {this.clearTimeout(); this.setState({ page: "Home" });}}><FontAwesomeIcon className="HomeButton" icon={['fas', 'home']} /></Button>
 		} else {
 
 			footerConent = <Button variant={variant} color={color} onClick={() => this.setState({ page: "Option" })}><FontAwesomeIcon className="HomeButton" icon={['fas', 'cog']} /></Button>
 		}
 
 		return footerConent;
+	}
+
+	componentDidUpdate(){
+		const options = GeneralUtil.getOptions();
+		if (this.state.page === "Q") {
+			timeoutID = options.isAuto && setTimeout(() => {
+				this.answer();
+			}, options.intervalQuestion + 500);
+	
+		} else if (this.state.page === "A") {
+			timeoutID = options.isAuto && setTimeout(() => {
+				this.next();
+			}, options.intervalAnswer + 500);
+		}
+
 	}
 
 	render() {
