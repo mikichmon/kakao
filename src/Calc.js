@@ -8,6 +8,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default class CalcCard extends Component {
 
@@ -238,10 +239,10 @@ export default class CalcCard extends Component {
 
         if (this.state.page !== "Home"){
             
-            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Home"})}><i class="fas fa-cog HomeButton"></i></Button>
+            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Home"})}><FontAwesomeIcon className="HomeButton" icon={['fas','home']} /></Button>
         }else{
 
-            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Option"})}><i class="fas fa-home HomeButton"></i></Button>
+            footerConent = <Button variant={variant} color={color} onClick={()=> this.setState({page:"Option"})}><FontAwesomeIcon className="HomeButton" icon={['fas','cog']} /></Button>
         }
 
         return footerConent;
