@@ -1,10 +1,10 @@
-//import React from 'react';
-
+// import React from 'react';
 export const Methods = {
 	Addition: 'Addition',
 	Subtraction: 'Subtraction',
 	Multiplication: 'Multiplication',
 	Division: 'Division',
+	All: 'All',
 };
 Object.freeze(Methods);
 
@@ -18,6 +18,8 @@ export default class GeneralUtil {
 			case Methods.Subtraction: mark = "-"; break;
 			case Methods.Multiplication: mark = "×"; break;
 			case Methods.Division: mark = "÷"; break;
+			//case Methods.All: mark = <div><div>+-</div><div>×÷</div></div>; break;
+			case Methods.All: mark = "All"; break;
 			default:
 
 		}

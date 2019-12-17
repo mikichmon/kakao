@@ -24,6 +24,7 @@ export default class Option extends Component {
 				<FormControlLabel value="5" control={<Radio />} label="5" />
 				<FormControlLabel value="10" control={<Radio />} label="10" />
 				<FormControlLabel value="50" control={<Radio />} label="50" />
+				<FormControlLabel value="-1" control={<Radio />} label="ずっと" />
 
 			</RadioGroup>
 		</FormControl>;
