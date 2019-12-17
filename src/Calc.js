@@ -137,7 +137,10 @@ export default class CalcCard extends Component {
 		return [Methods.Subtraction, leftNum, rightNum];
 	}
 
-	answer() {
+	answer(timeoutID) {
+		if (timeoutID != null){
+			clearTimeout(timeoutID);
+		}
 		this.setState({ page: 'A' });
 	}
 
@@ -202,7 +205,12 @@ export default class CalcCard extends Component {
 		const color = "primary";
 		const q = this.state.q;
 		const mark = GeneralUtil.getMethodMark(q[0]);
-		return <Button className="Question" variant={variant} color={color} onClick={this.answer}><div className="Calc">{q[1]} {mark} {q[2]}</div></Button>
+		const options = GeneralUtil.getOptions()
+		const timeoutID = options.isAuto && setTimeout(() => {
+			this.answer();
+		}, options.interval);
+
+		return <Button className="Question" variant={variant} color={color} onClick={()=>this.answer(timeoutID)}><div className="Calc">{q[1]} {mark} {q[2]}</div></Button>
 	}
 
 	getAnswer() {

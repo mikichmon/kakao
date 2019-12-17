@@ -31,7 +31,7 @@ export default class GeneralUtil {
 		let options = localStorage.getItem('Options');
 
 		if (options === null){
-			options = {count:10};
+			options = {count:10,isAuto:false,interval:1000};
 			localStorage.setItem('Options', JSON.stringify(options));
 		}else{
 			options = JSON.parse(options);
