@@ -17,9 +17,10 @@ const list = [
 	[5, 5]
 ];
 
-let timeoutID = null;
 
 export default class CalcCard extends Component {
+
+	timeoutID = null;
 
 	constructor(props) {
 		super(props);
@@ -41,11 +42,12 @@ export default class CalcCard extends Component {
 
 		const count = Number(GeneralUtil.getOptions().count);
 
-		this.setNewQuestion();
-		this.setState({ page: 'Q' });
-		this.setState({ qNo: 0 });
-		this.setState({ method });
-		this.setState({ count });
+		if (method === Methods.FromKeep){
+			this.MaintKeeps();
+		}
+
+		const q = this.getNewQuestion(method);
+		this.setState({ page: 'Q', qNo:0, method, count, q });
 
 	}
 	randomIntMinMax(min, max) {
@@ -54,9 +56,9 @@ export default class CalcCard extends Component {
 		return rand
 	}
 
-	setNewQuestion(){
+	getNewQuestion(method){
 
-		let nextMethod = this.state.method;
+		let nextMethod = method;
 		if (nextMethod === Methods.All){
 			const methodIdx = this.randomIntMinMax(0, 3);
 			nextMethod = forRandom[methodIdx];
@@ -67,10 +69,44 @@ export default class CalcCard extends Component {
 			case Methods.Subtraction: q = this.generate4Subtraction(); break;
 			case Methods.Multiplication: q = this.generate4Multiplication(); break;
 			case Methods.Division: q = this.generate4Division(); break;
+			case Methods.FromKeep: q = this.generateFromKeep(); break;
 			default:
 
 		}
-		this.setState({q});
+		return q;
+	}
+	MaintKeeps(){
+
+		const keeps = GeneralUtil.getKeeps();
+
+		if (keeps.length <= 1) return;
+
+		const newkeeps = [];
+		const dict = {};
+		const maxkeeps = GeneralUtil.getOptions().maxKeeps;
+		// 逆向き（新しい順)にループ
+		for (let i = keeps.length - 1; i >= 0; i--) {
+			const q = keeps[i];
+			const key = q[0] + '|' + q[1] + '|' + q[2];
+			if (dict[key] === undefined){
+				// Only not existing question will be added
+				newkeeps.unshift(q);
+				dict[key] = true;	// collect an existing key
+			}
+			if (newkeeps.length === maxkeeps) break;
+		}
+
+		GeneralUtil.setKeeps(newkeeps);
+	}
+	generateFromKeep(){
+		
+		const keeps = GeneralUtil.getKeeps();
+
+		if (keeps.length === 0) return null;
+
+		const idx = this.randomIntMinMax(0, keeps.length-1);
+
+		return keeps[idx];
 	}
 
 	generateQuestions(method){
@@ -163,8 +199,11 @@ export default class CalcCard extends Component {
 					</Button>
 				</div>
 				<div>
-					<Button className="StartAll" variant={variant} color={color} onClick={() => this.startCalc(Methods.All)}>
+					<Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.All)}>
 						{GeneralUtil.getMethodMark(Methods.All)}
+					</Button>
+					<Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.FromKeep)}>
+						苦手
 					</Button>
 				</div>
 			</div>;
@@ -182,10 +221,10 @@ export default class CalcCard extends Component {
 
 	clearTimeout(){
 
-		if (timeoutID != null)
+		if (this.timeoutID != null)
 		{
-			clearTimeout(timeoutID);
-			timeoutID = null;
+			clearTimeout(this.timeoutID);
+			this.timeoutID = null;
 		}
 
 	}
@@ -202,7 +241,6 @@ export default class CalcCard extends Component {
 		console.log("next");
 		this.clearTimeout();
 		const qNo = this.state.qNo + 1;
-		
 
 		if (this.state.count !== -1 && this.state.count <= qNo) {
 
@@ -210,8 +248,25 @@ export default class CalcCard extends Component {
 			return;
 		}
 
-		this.setNewQuestion();
-		this.setState({ qNo, page: 'Q' });
+		const q = this.getNewQuestion(this.state.method);
+		this.setState({ qNo, page: 'Q', q });
+	}
+
+	keep(){
+
+		this.clearTimeout();
+		
+		const q = this.state.q;
+
+		if (this.state.method === Methods.FromKeep){
+			GeneralUtil.removeQuestionInKeeps(q);
+
+		}else{
+			GeneralUtil.keepQuestion(q);
+
+		}
+		
+		this.next();
 	}
 
 	getQuestion() {
@@ -219,6 +274,11 @@ export default class CalcCard extends Component {
 		const variant = "text";
 		const color = "primary";
 		const q = this.state.q;
+
+		if (q == null){
+			return "問題がないよ";
+		}
+
 		const mark = GeneralUtil.getMethodMark(q[0]);
 		
 		console.log("getQuestion");
@@ -243,37 +303,52 @@ export default class CalcCard extends Component {
 
 		}
 
+		const mark = GeneralUtil.getMethodMark(q[0]);
+
 		console.log("getAnswer");
 
-		return <Button className="Answer" variant={variant} color={color} onClick={this.next}><span className="Calc">{answer}</span></Button>
+		const keepLabel = this.state.method === Methods.FromKeep ? '苦手リストから消す' : '苦手リストに入れる';
+
+		return <div className="AnswerArea">
+				<div className='QinA'>{q[1]} {mark} {q[2]}</div>
+				<Button className="Answer" variant={variant} color={color} onClick={this.next}><span className="Calc">{answer}</span></Button>
+				<Button className="Keep" variant={variant} color="secondary" onClick={()=>this.keep()}><span className="KeepText">{keepLabel}</span></Button>
+			</div>
 	}
 
-	getFooter() {
+	getHeader(){
 
-		let footerConent;
+		let content = null;
 		const variant = "text";
 		const color = "primary";
 
 		if (this.state.page !== "Home") {
 
-			footerConent = <Button variant={variant} color={color} onClick={() => {this.clearTimeout(); this.setState({ page: "Home" });}}><FontAwesomeIcon className="HomeButton" icon={['fas', 'home']} /></Button>
+			content = <Button variant={variant} color={color} onClick={() => {this.clearTimeout(); this.setState({ page: "Home" });}}><FontAwesomeIcon className="HeaderButton" icon={['fas', 'home']} /></Button>
 		} else {
 
-			footerConent = <Button variant={variant} color={color} onClick={() => this.setState({ page: "Option" })}><FontAwesomeIcon className="HomeButton" icon={['fas', 'cog']} /></Button>
+			content = <Button variant={variant} color={color} onClick={() => this.setState({ page: "Option" })}><FontAwesomeIcon className="HeaderButton" icon={['fas', 'cog']} /></Button>
 		}
 
-		return footerConent;
+		return content;
+	}
+
+	getFooter() {
+
+		let content = null;		
+		return content;
 	}
 
 	componentDidUpdate(){
 		const options = GeneralUtil.getOptions();
+		this.clearTimeout();
 		if (this.state.page === "Q") {
-			timeoutID = options.isAuto && setTimeout(() => {
+			this.timeoutID = this.state.q != null && options.isAuto && setTimeout(() => {
 				this.answer();
 			}, options.intervalQuestion + 500);
 	
 		} else if (this.state.page === "A") {
-			timeoutID = options.isAuto && setTimeout(() => {
+			this.timeoutID = options.isAuto && setTimeout(() => {
 				this.next();
 			}, options.intervalAnswer + 500);
 		}
@@ -284,15 +359,16 @@ export default class CalcCard extends Component {
 		
 		const content = this.getPage();
 		const footer = this.getFooter();
+		const header = this.getHeader();
 
 		return (
 
 			<div style={{ width: "100%" }}>
 
 				<CssBaseline />   {/* 追加 */}
+				<div className="HeaderArea">{header}</div>
 				<div>{content}</div>
-
-				<div className="Home">{footer}</div>
+				{footer}
 
 			</div>
 		);

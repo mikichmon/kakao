@@ -1,19 +1,27 @@
 
+.Body{
+
+	font-family: 'Nunito';
+}
 
 .Calc {
   width:100%;
   text-align:center;
-  font-size:120px;
+  /* font-size:120px; */
   /* font-family: 'Varela Round'; */
   font-family: 'Nunito';
   font-weight: bold;
+}
+
+.QinA{
+	font-family: 'Nunito';
 }
 
 .Start{
   
   font-family: 'Nunito' !important;
   font-weight: bold !important;
-  font-size:120px !important;
+  /* font-size:120px !important; */
   width: 45%;
 }
 
@@ -21,7 +29,7 @@
   
 	font-family: 'Nunito' !important;
 	font-weight: bold !important;
-	font-size:80px !important;
+	/* font-size:80px !important; */
 	/*width: 45%;*/
   }
 .Question{
@@ -32,11 +40,33 @@
   width:100%;
   text-align:center;
 }
+.Keep{
 
+	width:100%;
+	text-align:center;
+}
+.KeepText{
+
+	font-weight: bold;
+	font-size:26px;
+}
 .Home{
   margin-top:10px;
 }
 .HomeButton{
 
   font-size:50px;
+}
+.HeaderArea{
+	width:100%;
+	text-align: right;
+}
+
+.HeaderButton{
+	font-size:36px;
+}
+.AnswerArea{
+
+	width:100%;
+
 }
