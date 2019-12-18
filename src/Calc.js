@@ -199,10 +199,10 @@ export default class CalcCard extends Component {
 					</Button>
 				</div>
 				<div>
-					<Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.All)}>
-						{GeneralUtil.getMethodMark(Methods.All)}
+					<Button className="Start2" variant={variant} color={color} onClick={() => this.startCalc(Methods.All)}>
+						<span className="Start3">{GeneralUtil.getMethodMark(Methods.All)}</span>
 					</Button>
-					<Button className="Start" variant={variant} color={color} onClick={() => this.startCalc(Methods.FromKeep)}>
+					<Button className="Start2" variant={variant} color={color} onClick={() => this.startCalc(Methods.FromKeep)}>
 						苦手
 					</Button>
 				</div>
